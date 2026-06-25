@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teste de Personalidade</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h2{
+    text-align: center;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td{
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+th{
+    background-color: #2e7d32;
+    color: white;
+}
+
+select{
+    width: 60px;
+}
+
+button{
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#resultado{
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<h2>Teste de Personalidade</h2>
+
+<table>
+<thead>
+<tr>
+<th>Pergunta</th>
+<th>Resposta (1-5)</th>
+</tr>
+</thead>
+<tbody id="tabela"></tbody>
+</table>
+
+<button onclick="calcular()">Calcular e Salvar</button>
+
+<div id="resultado"></div>
+
+<script>
+
+const perguntas = [
+"É conversador, comunicativo",
+"Tende a ser crítico com os outros",
+"É minucioso, detalhista",
+"É depressivo, triste",
+"É original, tem sempre novas ideias",
+"É reservado",
+"É prestativo e ajuda os outros",
+"Pode ser um tanto descuidado",
+"Controla bem o estresse",
+"É curioso sobre muitas coisas diferentes",
+"É cheio de energia",
+"Começa discussões, disputas com os outros",
+"É um trabalhador de confiança",
+"Fica tenso com frequência",
+"É engenhoso, alguém que gosta de analisar profundamente as coisas",
+"Gera muito entusiasmo",
+"Tem capacidade de perdoar, perdoa facilmente",
+"Tende a ser desorganizado",
+"Preocupa-se muito com tudo",
+"Tem uma imaginação fértil",
+"Tende a ser quieto, calado",
+"É geralmente confiável",
+"Tende a postergar tarefas",
+"É emocionalmente estável, não se altera facilmente",
+"É inventivo, criativo",
+"É assertivo, não teme expressar o que sente",
+"Às vezes é frio e distante",
+"Insiste até concluir a tarefa ou trabalho",
+"É temperamental, muda de humor facilmente",
+"Valoriza o artístico, o estético",
+"Às vezes é tímido e inibido",
+"É amável, tem consideração pelos outros",
+"Faz as coisas com eficiência",
+"Mantém-se calmo nas situações de tensão",
+"Prefere trabalho rotineiro",
+"É sociável, extrovertido",
+"Às vezes é rude (grosseiro) com os outros",
+"Faz planos e segue-os à risca",
+"Fica nervoso facilmente",
+"Gosta de refletir, brincar com as ideias",
+"Tem poucos interesses artísticos",
+"Gosta de trabalhar em grupo",
+"É facilmente distraído",
+"É sofisticado em artes, música ou literatura"
+];
+
+const tabela = document.getElementById("tabela");
+
+perguntas.forEach((pergunta, indice) => {
+
+    const linha = document.createElement("tr");
+
+    linha.innerHTML = `
+        <td>${indice + 1}. ${pergunta}</td>
+        <td>
+            <select id="q${indice + 1}">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </td>
+    `;
+
+    tabela.appendChild(linha);
+});
+
+function calcular(){
+
+    let respostas = [];
+    let total = 0;
+
+    for(let i = 1; i <= 44; i++){
+
+        const valor = Number(document.getElementById(`q${i}`).value);
+
+        respostas.push(valor);
+        total += valor;
+    }
+
+    let perfil = "";
+
+    if(total >= 44 && total <= 79){
+        perfil = "Personalidade voltada para ABERTURA";
+    }
+    else if(total >= 80 && total <= 114){
+        perfil = "Personalidade voltada para CONSCIENCIOSIDADE";
+    }
+    else if(total >= 115 && total <= 149){
+        perfil = "Personalidade voltada para EXTROVERSÃO";
+    }
+    else if(total >= 150 && total <= 184){
+        perfil = "Personalidade voltada para AMABILIDADE";
+    }
+    else if(total >= 185 && total <= 220){
+        perfil = "Personalidade voltada para NEUROTICISMO";
+    }
+
+    document.getElementById("resultado").innerHTML =
+        `Pontuação Total: ${total}<br><br>${perfil}`;
+
+    let csv = "Pergunta,Resposta\n";
+
+    respostas.forEach((r, i) => {
+        csv += `"${perguntas[i]}",${r}\n`;
+    });
+
+    csv += `TOTAL,${total}\n`;
+    csv += `RESULTADO,"${perfil}"\n`;
+
+    const blob = new Blob(
+        ["\uFEFF" + csv],
+        { type: "text/csv;charset=utf-8;" }
+    );
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "resultado_personalidade.csv";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+</script>
+
+</body>
+</html>
